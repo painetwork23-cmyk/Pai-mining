@@ -188,3 +188,11 @@ alert('Sent '+amt+' PAI to '+to);openWallet();
 // Make ALL Wallet buttons open the wallet
 setTimeout(()=>{document.querySelectorAll('button,div').forEach(e=>{if(e.innerText && e.innerText.trim()==='Wallet'){e.onclick=openWallet;}});},1000);
 </script>
+<script>
+// BLOCK the old "coming soon" popup
+var oldAlert = window.alert;
+window.alert = function(msg){
+  if(String(msg).includes('Wallet coming soon')){ openWallet(); return; }
+  oldAlert(msg);
+};
+</script>
