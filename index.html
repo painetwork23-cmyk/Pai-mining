@@ -154,3 +154,37 @@ setInterval(updateUI, 1000);
 </script>
 </body>
                                                                            </html>
+<!-- PAI WALLET -->
+<div id="walletBox" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:9999;padding:20px;overflow:auto;text-align:center">
+<button onclick="document.getElementById('walletBox').style.display='none'" style="float:right;background:#333;color:#fff;border:0;padding:10px;border-radius:10px">✕ Close</button>
+<h2>💰 PAI Wallet</h2>
+<div style="background:#FFC107;color:#000;border-radius:16px;padding:20px;margin:15px 0"><div>Balance</div><div id="wBal" style="font-size:38px;font-weight:bold">0.00</div><div>PAI</div></div>
+<input id="wTo" placeholder="Receiver phone / address" style="width:90%;padding:12px;margin:5px;border-radius:10px">
+<input id="wAmt" type="number" placeholder="Amount e.g. 0.10" style="width:90%;padding:12px;margin:5px;border-radius:10px">
+<button onclick="wSend()" style="background:#FFC107;color:#000;border:0;padding:14px;width:90%;border-radius:12px;font-weight:bold;margin:5px">📤 SEND PAI</button>
+<div style="background:#1a1a1a;border-radius:12px;padding:14px;margin:10px 0;text-align:left"><b>Your Address:</b><br><span id="wAddr" style="color:#FFC107;word-break:break-all"></span><br><button onclick="navigator.clipboard.writeText(document.getElementById('wAddr').innerText);alert('Copied!')" style="background:#333;color:#fff;border:0;padding:10px;border-radius:8px;margin-top:8px">Copy Address</button></div>
+<div style="background:#1a1a1a;border-radius:12px;padding:14px;text-align:left"><b>History</b><div id="wHist"></div></div>
+</div>
+<script>
+function openWallet(){
+let b=parseFloat(localStorage.getItem('pai_balance')||'0.5372');
+let a=localStorage.getItem('pai_addr')||'PAI-'+Math.random().toString(36).slice(2,10).toUpperCase();
+localStorage.setItem('pai_addr',a);
+document.getElementById('wAddr').innerText=a;
+document.getElementById('wBal').innerText=b.toFixed(4);
+let h=JSON.parse(localStorage.getItem('pai_hist')||'[]');
+document.getElementById('wHist').innerHTML=h.length?h.join('<br>'):'No transactions yet';
+document.getElementById('walletBox').style.display='block';
+}
+function wSend(){
+let to=document.getElementById('wTo').value,amt=parseFloat(document.getElementById('wAmt').value);
+let b=parseFloat(localStorage.getItem('pai_balance')||'0.5372');
+if(!to||!amt)return alert('Enter address and amount');
+if(amt>b)return alert('Not enough balance!');
+b-=amt;localStorage.setItem('pai_balance',b);
+let h=JSON.parse(localStorage.getItem('pai_hist')||'[]');h.unshift('Sent '+amt+' PAI to '+to);localStorage.setItem('pai_hist',JSON.stringify(h));
+alert('Sent '+amt+' PAI to '+to);openWallet();
+}
+// Make ALL Wallet buttons open the wallet
+setTimeout(()=>{document.querySelectorAll('button,div').forEach(e=>{if(e.innerText && e.innerText.trim()==='Wallet'){e.onclick=openWallet;}});},1000);
+</script>
