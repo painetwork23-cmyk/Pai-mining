@@ -192,7 +192,7 @@ setTimeout(()=>{document.querySelectorAll('button,div').forEach(e=>{if(e.innerTe
 // BLOCK the old "coming soon" popup
 var oldAlert = window.alert;
 window.alert = function(msg){
-  if(String(msg).includes('Wallet coming soon')){ openWallet(); return; }
+  if(String(msg).includes('Wallet coming soon')){ openWallet(); return; }if(String(msg) . includes('KYC will open')){openKYC(); return;}
   oldAlert(msg);
 };
 </script>
