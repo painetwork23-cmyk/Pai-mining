@@ -237,3 +237,53 @@ setTimeout(function(){
   }
 }, 1000);
 </script>
+<script>
+// PAI KYC - WORKING VERSION
+function openKYC(){
+  var kyc = localStorage.getItem('pai_kyc_status');
+  if(kyc === 'verified'){
+    alert('✅ KYC VERIFIED\nYou are fully verified!');
+    return;
+  }
+  if(kyc === 'pending'){
+    alert('⏳ KYC PENDING\nWe are reviewing your documents.\nPlease wait 24 hours.');
+    return;
+  }
+  // If no KYC yet, ask details
+  var fullName = prompt('KYC VERIFICATION\n\nEnter Your Full Name:');
+  if(!fullName) return;
+  var idType = prompt('Enter ID Type:\nNIN / Passport / Drivers License');
+  if(!idType) return;
+  var idNum = prompt('Enter Your ID Number:');
+  if(!idNum) return;
+
+  localStorage.setItem('pai_kyc_name', fullName);
+  localStorage.setItem('pai_kyc_id', idNum);
+  localStorage.setItem('pai_kyc_status', 'pending');
+  alert('✅ KYC Submitted!\n\nName: ' + fullName + '\nStatus: PENDING ⏳\nWe will verify you soon.');
+  // Refresh the button text if it exists
+  var btns = document.querySelectorAll('button, a, div');
+  btns.forEach(function(b){
+    if(b.innerText && b.innerText.toLowerCase().includes('kyc')){
+      b.innerText = 'KYC: PENDING ⏳';
+    }
+  });
+}
+
+// Auto-update KYC button on load
+setTimeout(function(){
+  var status = localStorage.getItem('pai_kyc_status');
+  var btns = document.querySelectorAll('button, a, div');
+  btns.forEach(function(b){
+    if(b.innerText && b.innerText.trim().toLowerCase() === 'kyc'){
+      if(status === 'pending') b.innerText = 'KYC: PENDING ⏳';
+      if(status === 'verified') b.innerText = 'KYC: VERIFIED ✅';
+      b.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openKYC();
+      }, true);
+    }
+  });
+}, 1000);
+</script>
