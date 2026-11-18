@@ -196,3 +196,36 @@ window.alert = function(msg){
   oldAlert(msg);
 };
 </script>
+<script>
+// PAI WALLET PASSWORD LOCK
+var realOpenWallet = window.openWallet;
+window.openWallet = function(){
+  var savedPass = localStorage.getItem('pai_wallet_password');
+  
+  // If no password yet - Create one
+  if(!savedPass){
+    var newPass = prompt('🔒 Create Wallet Password:\nChoose a strong password for your PAI Wallet');
+    if(!newPass || newPass.length < 4){
+      alert('Password must be at least 4 characters!');
+      return;
+    }
+    var confirmPass = prompt('Confirm your Wallet Password:');
+    if(newPass !== confirmPass){
+      alert('Passwords do not match! Try again.');
+      return;
+    }
+    localStorage.setItem('pai_wallet_password', newPass);
+    alert('✅ Password Created! Keep it safe. Nobody can open your wallet without it.');
+    realOpenWallet();
+    return;
+  }
+  
+  // If password exists - Ask for it
+  var enterPass = prompt('🔒 Enter Wallet Password to Open Wallet:');
+  if(enterPass === savedPass){
+    realOpenWallet();
+  } else {
+    alert('❌ Wrong Password! Wallet will not open.');
+  }
+};
+</script>
